@@ -100,7 +100,7 @@ const UploadSheet = ({ onUploadComplete }) => {
               className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-gray-200"
             />
             <p className="text-xs text-gray-400 mt-1">
-              CSV should include columns for name and resume URL
+              CSV should include at least a column for the resume URL.
             </p>
           </div>
         )}

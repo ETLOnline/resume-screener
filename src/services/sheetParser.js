@@ -1,5 +1,4 @@
-// src/services/sheetParser.js
-import axios from 'axios';
+import Papa from 'papaparse';
 import { saveCandidateData } from './firebase';
 
 // Parse Google Sheet data
@@ -9,30 +8,25 @@ export const parseGoogleSheet = async (sheetId) => {
     // Google Sheets API URL for public sheets
     // Note: The sheet must be published to the web or set to "Anyone with the link can view"
     const sheetUrl = `https://spreadsheets.google.com/feeds/list/${sheetId}/od6/public/values?alt=json`;
-    
-    const response = await axios.get(sheetUrl);
-    const entries = response.data.feed.entry;
-    
+    const response = await fetch(sheetUrl);
+    const data = await response.json();
+    const entries = data.feed.entry;
     const candidates = [];
-    
+
     for (const entry of entries) {
-      // Assuming your sheet has columns 'name' and 'resumeurl'
-      const name = entry.gsx$name.$t;
-      const resumeUrl = entry.gsx$resumeurl.$t;
-      
-      if (name && resumeUrl) {
-        // Save to Firebase
-        const candidateData = {
-          name,
-          resumeUrl,
-          resumeContent: null, // Will be populated later
-          status: "pending",
-          screenings: []
-        };
-        
-        const candidateId = await saveCandidateData(candidateData);
-        candidates.push({ id: candidateId, ...candidateData });
-      }
+      // Build a candidate object with all columns available in the entry
+      const candidateData = {};
+      Object.keys(entry).forEach(key => {
+        if (key.startsWith('gsx$')) {
+          candidateData[key.replace('gsx$', '')] = entry[key].$t;
+        }
+      });
+      // Add default fields for later processing
+      candidateData.resumeContent = null;
+      candidateData.status = "pending";
+      candidateData.screenings = [];
+      const candidateId = await saveCandidateData(candidateData);
+      candidates.push({ id: candidateId, ...candidateData });
     }
     
     return candidates;
@@ -42,62 +36,29 @@ export const parseGoogleSheet = async (sheetId) => {
   }
 };
 
-// Alternative implementation using a CSV upload
+// Parse CSV uploaded file with dynamic column handling
 export const parseCSVUpload = async (csvFile) => {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const csvText = e.target.result;
-        const lines = csvText.split('\n');
-        const headers = lines[0].split(',');
-        
-        const nameIndex = headers.findIndex(h => h.toLowerCase().includes('first name'));
-        const nameIndex2 = headers.findIndex(h => h.toLowerCase().includes('last name'));
-        const urlIndex = headers.findIndex(h => h.toLowerCase().includes('resume') && h.toLowerCase().includes('url'));
-        
-        console.log(lines.length);
-
-        if (nameIndex === -1 || urlIndex === -1) {
-          reject(new Error('CSV file must include columns for name and resume URL'));
-          return;
-        }
-        
-        const candidates = [];
-        
-        for (let i = 1; i < lines.length; i++) {
-          if (!lines[i].trim()) continue;
-          
-          const values = lines[i].split(',');
-          const firstName = values[nameIndex].trim();
-          const lastName = values[nameIndex2].trim();
-          const resumeUrl = values[urlIndex].trim();
-          
-          if (firstName && resumeUrl) {
-            const candidateData = {
-              firstName,
-              lastName,
-              resumeUrl,
-              resumeContent: null,
-              status: "pending",
-              screenings: []
-            };
-            
+    Papa.parse(csvFile, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          const candidates = [];
+          for (const row of results.data) {
+            // Use entire row as candidate data
+            const candidateData = { ...row, resumeContent: null, status: "pending", screenings: [] };
             const candidateId = await saveCandidateData(candidateData);
             candidates.push({ id: candidateId, ...candidateData });
           }
+          resolve(candidates);
+        } catch (error) {
+          reject(error);
         }
-        
-        resolve(candidates);
-      } catch (error) {
+      },
+      error: (error) => {
         reject(error);
       }
-    };
-    
-    reader.onerror = (e) => {
-      reject(new Error(`Error reading CSV file - ${e.Error}`));
-    };
-    
-    reader.readAsText(csvFile);
+    });
   });
 };

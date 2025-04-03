@@ -4,7 +4,30 @@ import { screenResume } from '../../services/openRouter';
 import ModelSelector from './ModelSelector';
 import ScreeningResults from './ScreeningResults';
 
-const CandidateRow = ({ candidate, onUpdate }) => {
+// 1. Helper functions to find the "first name" and "last name" from dynamic columns
+const getDisplayFirstName = (candidate) => {
+  return (
+    candidate.firstName ||
+    candidate["First Name"] ||
+    candidate["first name"] ||
+    candidate["First name"] ||
+    candidate.name ||
+    candidate["Name"] ||
+    "N/A"
+  );
+};
+
+const getDisplayLastName = (candidate) => {
+  return (
+    candidate.lastName ||
+    candidate["Last Name"] ||
+    candidate["last name"] ||
+    candidate["Last name"] ||
+    ""
+  );
+};
+
+const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('');
@@ -65,13 +88,13 @@ const CandidateRow = ({ candidate, onUpdate }) => {
     <>
       <tr className="hover:bg-gray-700">
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center">
-            <div className="font-medium text-white">{candidate.firstName}</div>
+          <div className="font-medium text-white">
+            {getDisplayFirstName(candidate)}
           </div>
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex items-center">
-            <div className="font-medium text-white">{candidate.lastName}</div>
+          <div className="font-medium text-white">
+            {getDisplayLastName(candidate)}
           </div>
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
@@ -82,14 +105,19 @@ const CandidateRow = ({ candidate, onUpdate }) => {
             {candidate.screenings ? candidate.screenings.length : 0} screenings
           </span>
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-indigo-300 hover:text-indigo-400 mr-3"
+            className="text-indigo-300 hover:text-indigo-400"
           >
             {isExpanded ? 'Hide' : 'View'}
           </button>
-          
+          <button
+            onClick={() => onViewDetails(candidate)}
+            className="text-blue-300 hover:text-blue-400"
+          >
+            View Details
+          </button>
           {!candidate.resumeContent && (
             <button
               onClick={handleProcessResume}
@@ -153,14 +181,14 @@ const CandidateRow = ({ candidate, onUpdate }) => {
                       </button>
                     </div>
                   </div>
+                  
+                  {candidate.screenings && candidate.screenings.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold mb-2 text-white">Screening Results</h3>
+                      <ScreeningResults results={candidate.screenings} />
+                    </div>
+                  )}
                 </>
-              )}
-              
-              {candidate.screenings && candidate.screenings.length > 0 && (
-                <div>
-                  <h3 className="font-semibold mb-2 text-white">Screening Results</h3>
-                  <ScreeningResults results={candidate.screenings} />
-                </div>
               )}
             </div>
           </td>
