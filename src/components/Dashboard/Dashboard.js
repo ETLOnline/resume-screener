@@ -1,4 +1,3 @@
-// src/components/Dashboard/Dashboard.js
 import React, { useState } from 'react';
 import UploadSheet from './UploadSheet';
 import CandidateList from './CandidateList';
@@ -11,10 +10,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Resume Screening Dashboard</h1>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <h1 className="text-4xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
+        Resume Screening Dashboard
+      </h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-1">
           <UploadSheet onUploadComplete={handleUploadComplete} />
         </div>

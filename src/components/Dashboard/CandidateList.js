@@ -1,4 +1,3 @@
-// src/components/Dashboard/CandidateList.js
 import React, { useState, useEffect } from 'react';
 import { getCandidates } from '../../services/firebase';
 import CandidateRow from './CandidateRow';
@@ -70,53 +69,53 @@ const CandidateList = ({ newCandidates }) => {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading candidates...</div>;
+    return <div className="text-center py-8 text-white">Loading candidates...</div>;
   }
 
   if (error) {
-    return <div className="text-red-600 py-8">{error}</div>;
+    return <div className="text-red-400 py-8">{error}</div>;
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="p-4 flex justify-between items-center border-b">
-        <h2 className="text-xl font-semibold">Candidates ({candidates.length})</h2>
+    <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+      <div className="p-4 flex justify-between items-center border-b border-gray-700">
+        <h2 className="text-2xl font-semibold text-white">Candidates ({candidates.length})</h2>
         <button
           onClick={handleProcessAllResumes}
           disabled={isProcessingResumes}
-          className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 disabled:bg-gray-400"
+          className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-500"
         >
           {isProcessingResumes ? 'Processing...' : 'Process All Resumes'}
         </button>
       </div>
       
       {candidates.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-400">
           No candidates yet. Upload a Google Sheet or CSV file to get started.
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-700">
+            <thead className="bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   First Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Last Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Screenings
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-gray-800 divide-y divide-gray-700">
               {candidates.map(candidate => (
                 <CandidateRow 
                   key={candidate.id} 

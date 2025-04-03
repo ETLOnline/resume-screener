@@ -1,4 +1,3 @@
-// src/components/Dashboard/UploadSheet.js
 import React, { useState } from 'react';
 import { parseGoogleSheet, parseCSVUpload } from '../../services/sheetParser';
 
@@ -47,12 +46,12 @@ const UploadSheet = ({ onUploadComplete }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Upload Candidate Data</h2>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+      <h2 className="text-2xl font-semibold mb-4 text-white">Upload Candidate Data</h2>
       
       <div className="mb-4">
         <div className="flex space-x-4 mb-4">
-          <label className="flex items-center">
+          <label className="flex items-center text-gray-300">
             <input
               type="radio"
               value="googleSheet"
@@ -63,7 +62,7 @@ const UploadSheet = ({ onUploadComplete }) => {
             Google Sheet
           </label>
           
-          <label className="flex items-center">
+          <label className="flex items-center text-gray-300">
             <input
               type="radio"
               value="csvUpload"
@@ -77,9 +76,9 @@ const UploadSheet = ({ onUploadComplete }) => {
         
         {uploadMethod === 'googleSheet' ? (
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="block mb-2 text-sm font-medium text-gray-300">
               Google Sheet ID
-              <span className="text-xs text-gray-500 ml-2">
+              <span className="text-xs text-gray-400 ml-2">
                 (from the URL: https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit)
               </span>
             </label>
@@ -88,36 +87,36 @@ const UploadSheet = ({ onUploadComplete }) => {
               value={googleSheetId}
               onChange={(e) => setGoogleSheetId(e.target.value)}
               placeholder="Enter Google Sheet ID"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-gray-200"
             />
           </div>
         ) : (
           <div>
-            <label className="block mb-2 text-sm font-medium">CSV File</label>
+            <label className="block mb-2 text-sm font-medium text-gray-300">CSV File</label>
             <input
               type="file"
               accept=".csv"
               onChange={handleFileChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-gray-200"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-400 mt-1">
               CSV should include columns for name and resume URL
             </p>
           </div>
         )}
       </div>
       
-      {error && <div className="text-red-600 mb-4">{error}</div>}
+      {error && <div className="text-red-400 mb-4">{error}</div>}
       
       <button
         onClick={handleUpload}
         disabled={isLoading}
-        className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-400"
+        className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-500"
       >
         {isLoading ? 'Uploading...' : 'Upload Candidates'}
       </button>
     </div>
   );
 };
-
+ 
 export default UploadSheet;

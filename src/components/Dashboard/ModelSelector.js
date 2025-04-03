@@ -1,4 +1,3 @@
-// src/components/Dashboard/ModelSelector.js
 import React, { useState, useEffect } from 'react';
 import { getAvailableModels } from '../../services/openRouter';
 
@@ -29,22 +28,22 @@ const ModelSelector = ({ onModelSelect, selectedModel }) => {
   };
 
   if (isLoading) {
-    return <div className="text-sm text-gray-500">Loading available models...</div>;
+    return <div className="text-sm text-gray-400">Loading available models...</div>;
   }
 
   if (error) {
-    return <div className="text-sm text-red-600">{error}</div>;
+    return <div className="text-sm text-red-400">{error}</div>;
   }
 
   if (models.length === 0) {
-    return <div className="text-sm text-gray-500">No models available</div>;
+    return <div className="text-sm text-gray-400">No models available</div>;
   }
 
   return (
     <select
       value={selectedModel}
       onChange={(e) => onModelSelect(e.target.value)}
-      className="w-full p-2 border rounded-md"
+      className="w-full p-2 border border-gray-600 rounded-md bg-gray-800 text-gray-200"
     >
       <option value="">Select a model</option>
       {models.map((model) => (
