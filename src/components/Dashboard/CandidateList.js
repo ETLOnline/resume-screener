@@ -83,13 +83,13 @@ const CandidateList = ({ newCandidates }) => {
       <div className="bg-gray-800 rounded-lg shadow-xl overflow-hidden">
         <div className="p-4 flex justify-between items-center border-b border-gray-700">
           <h2 className="text-2xl font-semibold text-white">Candidates ({candidates.length})</h2>
-          <button
+          {/* <button
             onClick={handleProcessAllResumes}
             disabled={isProcessingResumes}
             className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-500"
           >
             {isProcessingResumes ? 'Processing...' : 'Process All Resumes'}
-          </button>
+          </button> */}
         </div>
         
         {candidates.length === 0 ? (
@@ -136,7 +136,8 @@ const CandidateList = ({ newCandidates }) => {
       {selectedCandidate && (
         <CandidateDetailModal 
           candidate={selectedCandidate} 
-          onClose={() => setSelectedCandidate(null)} 
+          onClose={() => setSelectedCandidate(null)}
+          onUpdate={loadCandidates} 
         />
       )}
     </>

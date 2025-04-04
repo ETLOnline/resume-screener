@@ -10,7 +10,7 @@ export const getAvailableModels = async () => {
   try {
     const response = await axios.get('https://openrouter.ai/api/v1/models', {
       headers: {
-        'Authorization': `Bearer ${process.env.OPEN_ROUTER_API_KEY}`,
+        'Authorization': `Bearer ${process.env.REACT_APP_OPEN_ROUTER_API_KEY}`,
         'HTTP-Referer': window.location.origin,
         'X-Title': 'Resume Screening App'
       }
@@ -31,43 +31,17 @@ export const getAvailableModels = async () => {
 
 // Generate screening prompt
 const generateScreeningPrompt = (resumeContent, jobDescription) => {
-  if (jobDescription) {
-    return `You are an expert resume screener. Please review the following resume for the job position described below.
-    
-Job Description:
-${jobDescription}
 
-Resume:
-${resumeContent}
-
-Please evaluate this candidate based on the following criteria:
-1. Relevant experience
-2. Skills match
-3. Education
-4. Overall fit for the role
-
-Provide a score from 1-10 for each category and an overall recommendation (Reject, Maybe, Proceed). Include brief justification for your assessment.`;
-  } else {
-    return `You are an expert resume screener. Please review the following resume.
-    
-Resume:
-${resumeContent}
-
-Please provide a comprehensive assessment of this candidate including:
-1. Candidate summary (background, experience level, specialty areas)
-2. Key skills identified
-3. Notable strengths
-4. Potential areas of concern
-5. Overall assessment of the candidate's profile
-
-Keep your response well-structured and concise.`;
-  }
+return `
+  Prompt:${jobDescription}
+  
+  Resume:${resumeContent}`;
 };
 
 // Screen resume with Open Router
-export const screenResume = async (candidateId, resumeContent, modelId, jobDescription = null) => {
+export const screenResume = async (candidateId, resumeContent, modelId, jobPrompt = null) => {
   try {
-    const prompt = generateScreeningPrompt(resumeContent, jobDescription);
+    const prompt = generateScreeningPrompt(resumeContent, jobPrompt);
     
     const response = await axios.post(OPEN_ROUTER_API_URL, {
       model: modelId,
@@ -78,7 +52,7 @@ export const screenResume = async (candidateId, resumeContent, modelId, jobDescr
     }, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPEN_ROUTER_API_KEY}`,
+        'Authorization': `Bearer ${process.env.REACT_APP_OPEN_ROUTER_API_KEY}`,
         'HTTP-Referer': window.location.origin,
         'X-Title': 'Resume Screening App'
       }

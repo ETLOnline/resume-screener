@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 const ScreeningResults = ({ results }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -6,11 +7,23 @@ const ScreeningResults = ({ results }) => {
   if (!results || results.length === 0) {
     return <div className="text-sm text-gray-400">No screening results yet</div>;
   }
-
+  
   // Sort results by timestamp, newest first
   const sortedResults = [...results].sort((a, b) => {
     return new Date(b.timestamp) - new Date(a.timestamp);
   });
+
+  function getAssessmentScore(text) {
+    const regex = /Total\s*Score:\s*(\d+(\.\d+)?)/i;
+    const match = text.match(regex);
+  
+    if (match) {
+      const score = parseFloat(match[1]);
+      return score;
+    } else {
+      return null; // Or you could throw an error, return a default value, etc.
+    }
+  }
 
   return (
     <div className="border border-gray-600 rounded-md overflow-hidden">
@@ -49,6 +62,7 @@ const ScreeningResults = ({ results }) => {
         
         <div className="border-t border-gray-600 pt-2 whitespace-pre-wrap text-gray-200">
           {sortedResults[activeTab].assessment}
+          {/* <ReactMarkdown children={sortedResults[activeTab].assessment} />; */}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { 
   getFirestore, 
-  connectFirestoreEmulator,
+  arrayUnion,
   collection, 
   addDoc, 
   getDocs, 
@@ -44,6 +44,12 @@ const candidatesRef = collection(db, "candidates");
 // Save candidate data
 export const saveCandidateData = async (candidateData) => {
   try {
+    let r = await checkUniqueCandidate(candidateData.Email);
+    if(r.success === false) {
+      console.log(r.error); 
+      return 0;
+    }
+  
     const docRef = await addDoc(candidatesRef, {
       ...candidateData,
       createdAt: new Date(),
@@ -70,14 +76,27 @@ export const getCandidates = async () => {
   }
 };
 
+export const checkUniqueCandidate = async (email) => {
+  const candidatesRef = collection(db, 'candidates');
+  
+  // Check if an email already exists
+  const emailQuery = query(candidatesRef, where('Email', '==', email));
+  const querySnapshot = await getDocs(emailQuery);
+
+  if (!querySnapshot.empty) {
+    console.error('Email already exists.');
+    return { success: false, error: 'Email already exists.' }; // Indicate failure
+  }
+  return { success: true }
+};
+
 // Save screening result
 export const saveScreeningResult = async (candidateId, screeningData) => {
   try {
     const candidateDoc = doc(db, "candidates", candidateId);
-    const updatedScreenings = {
-      screenings: screeningData
-    };
-    await updateDoc(candidateDoc, updatedScreenings);
+    await updateDoc(candidateDoc, {
+      screenings: arrayUnion(screeningData)
+    });    
     return true;
   } catch (error) {
     console.error("Error saving screening result: ", error);

@@ -107,26 +107,12 @@ const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-indigo-300 hover:text-indigo-400"
-          >
-            {isExpanded ? 'Hide' : 'View'}
-          </button>
-          <button
             onClick={() => onViewDetails(candidate)}
             className="text-blue-300 hover:text-blue-400"
           >
             View Details
           </button>
-          {!candidate.resumeContent && (
-            <button
-              onClick={handleProcessResume}
-              disabled={isLoading}
-              className="text-green-300 hover:text-green-400"
-            >
-              {isLoading ? 'Processing...' : 'Process Resume'}
-            </button>
-          )}
+          
         </td>
       </tr>
       

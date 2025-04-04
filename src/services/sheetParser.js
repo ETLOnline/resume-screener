@@ -49,6 +49,7 @@ export const parseCSVUpload = async (csvFile) => {
             // Use entire row as candidate data
             const candidateData = { ...row, resumeContent: null, status: "pending", screenings: [] };
             const candidateId = await saveCandidateData(candidateData);
+            if(candidateId === 0) continue;
             candidates.push({ id: candidateId, ...candidateData });
           }
           resolve(candidates);
