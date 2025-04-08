@@ -4,6 +4,7 @@ import { FaLinkedin, FaEnvelope, FaWhatsapp, FaFileDownload, FaDatabase } from '
 import { fetchResumeContent, saveResumeContent } from '../../services/resumeParser';
 import { CandidateStatus } from '../../common/Constants';
 import ModelSelector from './ModelSelector';
+import PromptSelector from './PromptSelector';
 import ScreeningResults from './ScreeningResults';
 import { screenResume } from '../../services/openRouter';
 
@@ -105,7 +106,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
   const [isScreening, setIsScreening] = useState(false);
   const [isTableCollapsed, setIsTableCollapsed] = useState(true);
   const [isScreeningCollapsed, setIsScreeningCollapsed] = useState(true);
-  const [jobPrompt, setJobPrompt] = useState('');
+  const [selectedPrompt, setSelectedPrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
 
   const toggleTableCollapse = () => {
@@ -119,7 +120,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
   const resumeUrl = getResumeUrl(candidate);
   const whatsAppLink = getWhatsAppLink(candidate);
   const emailAddress = getEmail(candidate);
-
+  
   const extractResumeContent = async (candidate) => {
     setIsLoading(true);
     try {
@@ -136,7 +137,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
   };
 
   const handleScreenResume = async () => {
-    if(!jobPrompt) {
+    if(!selectedPrompt) {
       alert('Please specify a prompt');
       return;
     }
@@ -151,7 +152,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
         candidate.id, 
         candidate.resumeContent, 
         selectedModel, 
-        jobPrompt || null
+        selectedPrompt
       );
       onUpdate();
     } catch (error) {
@@ -277,15 +278,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
             </button>
             {!isScreeningCollapsed && (
               <>
-                <div className="mb-4">
-                  <h3 className="font-semibold mb-2 text-white">Prompt</h3>
-                  <textarea
-                    value={jobPrompt}
-                    onChange={(e) => setJobPrompt(e.target.value)}
-                    placeholder="Enter job prompt for targeted screening"
-                    className="w-full border p-3 rounded-md bg-gray-800 text-gray-200 h-24"
-                  />
-                </div>
+                <PromptSelector onPromptSelect={setSelectedPrompt} selectedPrompt={selectedPrompt} />
               
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>

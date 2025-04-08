@@ -3,6 +3,7 @@ import { fetchResumeContent, saveResumeContent } from '../../services/resumePars
 import { screenResume } from '../../services/openRouter';
 import ModelSelector from './ModelSelector';
 import ScreeningResults from './ScreeningResults';
+import { extractTotalScoreFromMixedString } from '../../common/Functions.js';
 
 // 1. Helper functions to find the "first name" and "last name" from dynamic columns
 const getDisplayFirstName = (candidate) => {
@@ -25,6 +26,36 @@ const getDisplayLastName = (candidate) => {
     candidate["Last name"] ||
     ""
   );
+};
+
+const getPositionAppliedFor = (candidate) => {
+  let position = "" || candidate["Position that you are applying for"] || candidate["position that you are applying for"];
+  let str = String(position);
+  if(str.length > 14) return str.slice(0,14);
+  
+  return str;
+};
+
+const getScreeningResults = (candidate) => {
+  
+  //let str = candidate.screenings ? candidate.screenings.length : 0;  
+  let str = "";
+  let totalScreenings = 0;
+  let averageScore = 0;
+  if(candidate.screenings) {
+    candidate.screenings.forEach(element => {
+      if(element.assessment) {
+        let score = extractTotalScoreFromMixedString(element.assessment);
+        if(score) {
+          totalScreenings ++;
+          averageScore += score;
+          str += score + ", ";
+        }        
+      }      
+    });
+  }
+  if(averageScore) averageScore = averageScore / totalScreenings;
+  return str + ` (${averageScore}) `;
 };
 
 const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
@@ -97,13 +128,15 @@ const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
             {getDisplayLastName(candidate)}
           </div>
         </td>
-
         <td className="px-6 py-4 whitespace-nowrap">
           {getStatusBadge()}
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
+          {getPositionAppliedFor(candidate)}
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap">
           <span className="text-sm text-gray-300">
-            {candidate.screenings ? candidate.screenings.length : 0} screenings
+            {getScreeningResults(candidate)}
           </span>
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">

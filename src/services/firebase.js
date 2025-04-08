@@ -122,3 +122,18 @@ export const getScreeningResults = async (candidateId) => {
     throw error;
   }
 };
+
+export const loadPrompts = async () => {
+  const querySnapshot = await getDocs(collection(db, "prompts"));
+  const loadedPrompts = querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    name: doc.data().name,
+    role: doc.data().role || "No role assigned",  // ✅ Load role or show default text
+    prompt: doc.data().prompt,
+  }));
+
+  if (loadedPrompts.length === 0) {
+    console.log("No prompts found in the database."); // Debugging message
+  }
+  return loadedPrompts;  
+};
