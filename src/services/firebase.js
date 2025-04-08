@@ -8,6 +8,7 @@ import {
   getDocs, 
   doc, 
   updateDoc, 
+  deleteDoc, 
   query, 
   where 
 } from "firebase/firestore";
@@ -40,6 +41,9 @@ const storage = getStorage(app);
 // } else console.log('Using Firebase Prod');
 // Candidates collection reference
 const candidatesRef = collection(db, "candidates");
+
+// **Fixed: Adding collection export for Firestore functions**
+export { db, auth, storage, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, arrayUnion };
 
 // Save candidate data
 export const saveCandidateData = async (candidateData) => {
@@ -77,7 +81,7 @@ export const getCandidates = async () => {
 };
 
 export const checkUniqueCandidate = async (email) => {
-  const candidatesRef = collection(db, 'candidates');
+  //const candidatesRef = collection(db, 'candidates'); // commented as global var already exists
   
   // Check if an email already exists
   const emailQuery = query(candidatesRef, where('Email', '==', email));
@@ -118,5 +122,3 @@ export const getScreeningResults = async (candidateId) => {
     throw error;
   }
 };
-
-export { db, auth };

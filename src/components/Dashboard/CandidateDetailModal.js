@@ -123,7 +123,7 @@ const CandidateDetailModal = ({ candidate, onClose, onUpdate }) => {
   const extractResumeContent = async (candidate) => {
     setIsLoading(true);
     try {
-      const resumeContent = await fetchResumeContent(candidate["Resume Url"]);
+      const resumeContent = await fetchResumeContent(candidate["Resume upload"]);
       await saveResumeContent(candidate.id, resumeContent);
       onUpdate();
       onClose();

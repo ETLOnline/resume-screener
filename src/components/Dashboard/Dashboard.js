@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';  // ✅ Import Link for navigation
 import UploadSheet from './UploadSheet';
 import CandidateList from './CandidateList';
+
 
 const Dashboard = () => {
   const [newCandidates, setNewCandidates] = useState(null);
@@ -14,6 +16,13 @@ const Dashboard = () => {
       <h1 className="text-4xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">
         Resume Screening Dashboard
       </h1>
+
+      {/* ✅ Navigation Button to Prompts Page */}
+      <div className="text-center mb-6">
+        <Link to="/prompts" className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+          Manage Prompts
+        </Link>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-1">

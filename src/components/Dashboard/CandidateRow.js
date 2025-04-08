@@ -97,6 +97,7 @@ const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
             {getDisplayLastName(candidate)}
           </div>
         </td>
+
         <td className="px-6 py-4 whitespace-nowrap">
           {getStatusBadge()}
         </td>
