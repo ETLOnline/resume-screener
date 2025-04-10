@@ -4,6 +4,7 @@ import { screenResume } from '../../services/openRouter';
 import ModelSelector from './ModelSelector';
 import ScreeningResults from './ScreeningResults';
 import { extractTotalScoreFromMixedString } from '../../common/Functions.js';
+import { useNavigate } from 'react-router-dom'; // Assuming you are using React Router for navigation
 
 // 1. Helper functions to find the "first name" and "last name" from dynamic columns
 const getDisplayFirstName = (candidate) => {
@@ -36,6 +37,62 @@ const getPositionAppliedFor = (candidate) => {
   return str;
 };
 
+const getScreeningWATotalScoreResults = (candidate) => {
+  let weightedAverageTotal = '0.00'; // Initialize with placeholder
+
+  if (candidate.screenings && candidate.screenings.length > 0) {
+    const lastScreening = candidate.screenings[candidate.screenings.length - 1];
+    if (lastScreening && lastScreening.assessment) {
+      const weightedScore = extractTotalScoreFromMixedString(lastScreening.assessment);
+      if (typeof weightedScore === 'number') {
+        weightedAverageTotal = weightedScore.toFixed(2);
+      }
+    }
+  }
+
+  return `${weightedAverageTotal}`;
+};
+
+/*
+const getScreeningWATotalScoreResults = (candidate) => {
+  let str = "";
+
+  let totalScreenings = 0;
+  let averageScore = 0;
+  let weightedAverageTotal = 0; // Initialize with a number
+
+  if (candidate.screenings) {
+    candidate.screenings.forEach(element => {
+      if (element.assessment) {
+        // Try to extract the simple total score (if needed elsewhere)
+        // const score = extractTotalScoreFromMixedString(element.assessment);
+        // if (score) {
+        //   totalScreenings ++;
+        //   averageScore += score;
+        //   str += score + ", ";
+        // }
+
+        // Extract the weighted average total score
+        const weightedScore = extractTotalScoreFromMixedString(element.assessment);
+        if (typeof weightedScore === 'number') {
+          weightedAverageTotal = weightedScore; // Update only if it's a number
+        }
+      }
+    });
+  }
+  // if(averageScore) averageScore = averageScore / totalScreenings;
+
+  // Ensure weightedAverageTotal is a number before calling toFixed
+  const formattedWeightedAverage = typeof weightedAverageTotal === 'number'
+    ? weightedAverageTotal.toFixed(2)
+    : 'N/A'; // Or some other appropriate placeholder
+
+  return `${str} ${formattedWeightedAverage}`;
+};
+*/
+
+
+/*
 const getScreeningResults = (candidate) => {
   
   //let str = candidate.screenings ? candidate.screenings.length : 0;  
@@ -57,13 +114,21 @@ const getScreeningResults = (candidate) => {
   if(averageScore) averageScore = averageScore / totalScreenings;
   return str + ` (${averageScore}) `;
 };
+*/
 
-const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
+const CandidateRow = ({ candidate, onUpdate, onViewDetails}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState('');
   const [isScreening, setIsScreening] = useState(false);
   const [jobDescription, setJobDescription] = useState('');
+
+  const navigate = useNavigate();
+  const screeningResult = getScreeningWATotalScoreResults(candidate);
+
+  //window.alert(screeningResult);
+  const averageScore = screeningResult ? parseFloat(screeningResult) : NaN;
+  const isZeroScore = !isNaN(averageScore) && averageScore === 0;
 
   const handleProcessResume = async () => {
     setIsLoading(true);
@@ -76,6 +141,13 @@ const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
       alert(`Error processing resume: ${error.message}`);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleViewScreening = () => {
+    if (!isZeroScore) {
+      //console.log("Navigating with screenings:", candidate.screenings);
+      navigate('/screeningresultview', { state: { screenings: candidate.screenings } });
     }
   };
 
@@ -134,11 +206,30 @@ const CandidateRow = ({ candidate, onUpdate, onViewDetails }) => {
         <td className="px-6 py-4 whitespace-nowrap">
           {getPositionAppliedFor(candidate)}
         </td>
+
+        {/*}
         <td className="px-6 py-4 whitespace-nowrap">
           <span className="text-sm text-gray-300">
             {getScreeningResults(candidate)}
           </span>
         </td>
+        */}
+
+        <td className="px-6 py-4 whitespace-nowrap">
+          {isZeroScore ? (
+            <span className="text-sm text-gray-500 cursor-not-allowed">
+              {screeningResult}
+            </span>
+          ) : (
+            <button
+              onClick={handleViewScreening}
+              className="text-sm text-blue-300 hover:text-blue-400"
+            >
+              {screeningResult}
+            </button>
+          )}
+        </td>
+        
         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
           <button
             onClick={() => onViewDetails(candidate)}

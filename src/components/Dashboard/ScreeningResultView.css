@@ -1,0 +1,74 @@
+.screening-view-container {
+    font-family: sans-serif;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .screening-view-container h1 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .screening-item {
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+  
+  .screening-item h2 {
+    color: #555;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+  }
+  
+  .assessment-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    align-items: baseline;
+  }
+  
+  .assessment-key {
+    font-weight: bold;
+    color: #333;
+    min-width: 200px; /* Adjust as needed */
+    text-align: left;
+  }
+  
+  .assessment-value {
+    color: #555;
+    flex-grow: 1;
+  }
+  
+  .detail-key {
+    font-weight: bold;
+    color: #666;
+    margin-right: 5px;
+  }
+  
+  .detail-value {
+    color: #777;
+  }
+
+  .back-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0056b3;
+  }

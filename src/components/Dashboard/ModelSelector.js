@@ -44,10 +44,10 @@ const ModelSelector = ({ onModelSelect, selectedModel }) => {
       //availableModels = sortModelsByVendorAndName(availableModels);
       //console.log(availableModels);
       const availableModels = [
-        {"id": "anthropic/claude-3.7-sonnet", "name": "Anthropic: Claude 3.7 Sonnet"},
-        {"id": "google/gemini-2.0-flash-001", "name": "Google: Gemini 2.0 Flash"},
-        {"id": "openai/gpt-4o", "name": "OpenAI: GPT-4o"},
-        {"id": "x-ai/grok-2-1212", "name": "xAI: Grok 2 1212"}        
+//        {"id": "anthropic/claude-3.7-sonnet", "name": "Anthropic: Claude 3.7 Sonnet"},
+        {"id": "google/gemini-2.0-flash-001", "name": "Google: Gemini 2.0 Flash"}
+//        {"id": "openai/gpt-4o", "name": "OpenAI: GPT-4o"},
+//        {"id": "x-ai/grok-2-1212", "name": "xAI: Grok 2 1212"}        
       ]
       setModels(availableModels);
       
